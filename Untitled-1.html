@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Playlist Favoritas | Begonia & Dragon Edition</title>
+
+  <!-- Google Fonts: Poppins y Cinzel -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+  <style>
+    :root {
+      --bg-color: #0d0c11;
+      --surface-color: #17151e;
+      --surface-hover: #23202e;
+      --text-main: #ffffff;
+      --text-muted: #a8a6b5;
+
+      /* Paleta Rosa & Begonia Premium */
+      --begonia-pink: #ff4d6d;
+      --begonia-soft: #ff758f;
+      --begonia-light: #ffb3c1;
+      --accent-gradient: linear-gradient(135deg, #ff4d6d 0%, #ff758f 50%, #c77dff 100%);
+      --dragon-gradient: linear-gradient(135deg, #ff4d6d 0%, #7928ca 100%);
+      --card-border: rgba(255, 117, 143, 0.2);
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+      position: relative;
+      padding-bottom: 110px; /* Espacio para el reproductor fijo */
+    }
+
+    /* Fondo Decorativo Floral & Dragón */
+    body::before {
+      content: "";
+      position: fixed;
+      top: -10%; left: -10%;
+      width: 50vw; height: 50vw;
+      background: radial-gradient(circle, rgba(255, 77, 109, 0.08) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      bottom: -10%; right: -10%;
+      width: 50vw; height: 50vw;
+      background: radial-gradient(circle, rgba(199, 125, 255, 0.08) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Contenedor fluido para aprovechar toda la pantalla en PC */
+    .container-fluid-custom {
+      width: 100%;
+      padding-right: 3rem;
+      padding-left: 3rem;
+    }
+
+    @media (max-width: 768px) {
+      .container-fluid-custom {
+        padding-right: 1.5rem;
+        padding-left: 1.5rem;
+      }
+    }
+
+    /* Navbar Glassmorphism con borde Begonia */
+    .navbar-glass {
+      background: rgba(13, 12, 17, 0.88) !important;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255, 117, 143, 0.2);
+      z-index: 1050;
+    }
+
+    .navbar-brand {
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+      font-size: 1rem;
+      letter-spacing: -0.5px;
+    }
+
+    .nav-link {
+      color: var(--text-main) !important;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .nav-link:hover {
+      color: var(--begonia-soft) !important;
+    }
+
+    /* Header Hero */
+    .hero {
+      position: relative;
+      padding: 160px 0 110px 0;
+      background-image: url('https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1920&q=80');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      width: 100%;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(to bottom, rgba(13, 12, 17, 0.75) 0%, rgba(13, 12, 17, 1) 100%);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .text-gradient {
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .btn-gradient {
+      background: var(--accent-gradient);
+      color: #ffffff;
+      border: none;
+      border-radius: 50px;
+      padding: 12px 32px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 18px rgba(255, 77, 109, 0.35);
+    }
+
+    .btn-gradient:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 28px rgba(255, 77, 109, 0.55);
+      color: #ffffff;
+    }
+
+    /* Tarjetas de Frases Inspiracionales / Quotes */
+    .quote-card {
+      background: rgba(23, 21, 30, 0.7);
+      border: 1px solid var(--card-border);
+      border-radius: 22px;
+      overflow: hidden;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .custom-card {
+      background: rgba(23, 21, 30, 0.7);
+      border: 1px solid var(--card-border);
+      border-radius: 22px;
+      overflow: hidden;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .custom-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(255, 117, 143, 0.5);
+      box-shadow: 0 18px 40px rgba(255, 77, 109, 0.2);
+    }
+
+    .custom-card img {
+      height: 230px;
+      object-fit: cover;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    /* Pestañas de Navegación de Artistas */
+    .nav-pills .nav-link {
+      color: var(--text-muted);
+      border-radius: 50px;
+      padding: 10px 24px;
+      margin: 0 4px 10px 4px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.3s ease;
+    }
+
+    .nav-pills .nav-link:hover {
+      color: var(--text-main);
+      background-color: var(--surface-hover);
+      border-color: rgba(255, 117, 143, 0.3);
+    }
+
+    .nav-pills .nav-link.active {
+      background: var(--accent-gradient);
+      color: #ffffff;
+      font-weight: 600;
+      border-color: transparent;
+      box-shadow: 0 6px 20px rgba(255, 77, 109, 0.45);
+    }
+
+    /* Marcos e Imagen de Artistas con Brillo de Dragón */
+    .artist-img-wrapper {
+      position: relative;
+      border-radius: 22px;
+      padding: 3px;
+      background: var(--dragon-gradient);
+      box-shadow: 0 15px 35px rgba(255, 77, 109, 0.25);
+    }
+
+    .artist-img {
+      width: 100%;
+      height: 380px;
+      object-fit: cover;
+      border-radius: 20px;
+      display: block;
+    }
+
+    /* Lista de Canciones Interactivas */
+    .track-item {
+      background-color: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      color: var(--text-main);
+      transition: background 0.2s ease;
+      border-radius: 12px;
+    }
+
+    .track-item:hover {
+      background-color: var(--surface-hover);
+    }
+
+    .track-number {
+      color: var(--begonia-soft);
+      font-weight: 700;
+      width: 30px;
+    }
+
+    .btn-play {
+      background-color: rgba(255, 117, 143, 0.12);
+      color: var(--text-main);
+      border: 1px solid rgba(255, 117, 143, 0.4);
+      border-radius: 50px;
+      transition: all 0.3s;
+    }
+
+    .btn-play:hover {
+      background: var(--begonia-pink);
+      border-color: var(--begonia-pink);
+      color: white;
+      transform: scale(1.06);
+      box-shadow: 0 4px 18px rgba(255, 77, 109, 0.5);
+    }
+
+    .btn-like {
+      color: var(--text-muted);
+      background: transparent;
+      border: none;
+      transition: transform 0.2s, color 0.2s;
+    }
+
+    .btn-like.active, .btn-like:hover {
+      color: var(--begonia-pink);
+      transform: scale(1.2);
+    }
+
+    /* Insignia Begonia */
+    .badge-begonia {
+      background: rgba(255, 77, 109, 0.18);
+      color: var(--begonia-light);
+      border: 1px solid rgba(255, 77, 109, 0.4);
+      font-weight: 500;
+    }
+
+    /* Formulario */
+    .form-control {
+      background-color: var(--surface-color);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      border-radius: 14px;
+      padding: 12px 16px;
+    }
+
+    .form-control:focus {
+      background-color: var(--surface-hover);
+      border-color: var(--begonia-soft);
+      color: var(--text-main);
+      box-shadow: 0 0 0 0.25rem rgba(255, 77, 109, 0.25);
+    }
+
+    /* Reproductor de Audio Flotante Glassmorphism */
+    .audio-player-bar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: rgba(18, 16, 24, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(255, 117, 143, 0.3);
+      z-index: 1100;
+      padding: 15px 0;
+      box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
+    }
+
+    .dragon-icon {
+      width: 28px;
+      height: 28px;
+      fill: url(#begoniaGradient);
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. Definición Global de Gradientes SVG para Íconos -->
+  <svg style="width:0;height:0;position:absolute;" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id="begoniaGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#ff4d6d" />
+        <stop offset="50%" stop-color="#ff758f" />
+        <stop offset="100%" stop-color="#c77dff" />
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <!-- 2. NAVEGACIÓN -->
+  <nav class="navbar navbar-expand-lg navbar-dark navbar-glass fixed-top">
+    <div class="container-fluid-custom">
+      <a class="navbar-brand d-flex align-items-center" href="#inicio">
+        <svg class="dragon-icon me-2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M21.58 10.38c-.28-.52-2.12-2.48-4.48-3.09-1.28-.33-2.43-.24-3.32.1-1.07.41-1.87 1.15-2.26 1.63-.58-.3-1.27-.47-2.02-.47-2.31 0-4.18 1.88-4.18 4.2 0 1.25.55 2.37 1.41 3.14-.14.28-.35.73-.61 1.25l-2.82 5.64c-.18.36.03.8.43.89l3.52.88c.32.08.66-.06.81-.36l2.1-4.2c.57.17 1.18.26 1.81.26 3.03 0 5.5-2.46 5.5-5.5 0-.58-.09-1.14-.26-1.67.65-.63 1.62-1.78 2.3-2.91.31-.51.78-1.55.85-2.06.07-.5-.45-.61-.78-.73zM7.09 13.9c-1.16 0-2.1-1.12-2.1-2.5s.94-2.5 2.1-2.5c1.16 0 2.1 1.12 2.1 2.5s-.94 2.5-2.1 2.5z" />
+        </svg>
+        PLAYLIST BEGONIA
+      </a>
+
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto align-items-center">
+          <li class="nav-item"><a class="nav-link" href="#inicio">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link" href="#artistas">Artistas</a></li>
+          <li class="nav-item"><a class="nav-link" href="#favoritas">Favoritas</a></li>
+          <li class="nav-item"><a class="nav-link" href="#contacto">Sugerencias</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 3. HERO SECTION -->
+  <header id="inicio" class="hero text-center">
+    <div class="hero-overlay"></div>
+    <div class="container-fluid-custom hero-content py-5">
+
+      <div class="row justify-content-center mb-4">
+        <div class="col-md-9 col-lg-7">
+          <div class="quote-card p-4 shadow-lg">
+            <p class="fs-5 mb-0 text-light" style="font-family: 'Cinzel', serif;">
+              "Como el fuego de un dragón, un buen acorde enciende el alma. Entre rimas, recuerdos y begonias, las verdaderas leyendas nunca mueren."
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <span class="badge badge-begonia rounded-pill px-4 py-2 mb-3 fs-6">
+        <i class="bi bi-music-note-beaming me-1"></i> Experiencia Sensorial & Stream Interno
+      </span>
+
+      <h1 class="display-3 fw-bold mb-3" style="font-family: 'Cinzel', serif;">
+        La Mejor Música <br><span class="text-gradient">Regional & Bélica</span>
+      </h1>
+
+      <p class="lead text-muted max-w-2xl mx-auto mb-5">
+        Escucha tu selección de música regional desde tus propios archivos, con una colección organizada por artista.
+      </p>
+
+      <a href="#artistas" class="btn btn-gradient btn-lg me-3 mb-2">
+        <i class="bi bi-play-circle-fill me-2"></i>Escuchar Ahora
+      </a>
+      <a href="#contacto" class="btn btn-outline-light btn-lg rounded-pill px-4 mb-2">
+        <i class="bi bi-send-fill me-2"></i>Sugerir Canción
+      </a>
+    </div>
+  </header>
+
+  <!-- 4. TARJETAS DE SECCIONES INTERACTIVAS -->
+  <section id="secciones" class="container-fluid-custom py-5 mt-4">
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="custom-card h-100 position-relative">
+          <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80" alt="Artistas" class="w-100">
+          <div class="card-body p-4 text-center">
+            <h4 class="fw-bold mb-3" style="font-family: 'Cinzel', serif;">
+              <i class="bi bi-person-lines-fill text-gradient me-2"></i>LOS GRANDES
+            </h4>
+            <p class="text-muted">Conoce el estilo, la historia y la trayectoria de los líderes indiscutibles de la escena.</p>
+          </div>
+          <div class="card-footer bg-transparent border-0 px-4 pb-4">
+            <a href="#artistas" class="btn btn-outline-light w-100 rounded-pill">Ver Catálogo</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="custom-card h-100 position-relative">
+          <img src="https://images.unsplash.com/photo-1619983081563-430f63602796?auto=format&fit=crop&w=600&q=80" alt="Canciones" class="w-100">
+          <div class="card-body p-4 text-center">
+            <h4 class="fw-bold mb-3" style="font-family: 'Cinzel', serif;">
+              <i class="bi bi-boombox-fill text-gradient me-2"></i>PLAYLIST TOP
+            </h4>
+            <p class="text-muted">Una recopilación exclusiva con las 25 canciones más emblemáticas de tus artistas favoritos.</p>
+          </div>
+          <div class="card-footer bg-transparent border-0 px-4 pb-4">
+            <a href="#artistas" class="btn btn-outline-light w-100 rounded-pill">Explorar Playlist</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="custom-card h-100 position-relative">
+          <img src="https://images.unsplash.com/photo-1465847899084-d164df4dedc6?auto=format&fit=crop&w=600&q=80" alt="Sugerencias" class="w-100">
+          <div class="card-body p-4 text-center">
+            <h4 class="fw-bold mb-3" style="font-family: 'Cinzel', serif;">
+              <i class="bi bi-chat-heart-fill text-gradient me-2"></i>BUZÓN ABIERTO
+            </h4>
+            <p class="text-muted">Participa proponiendo nuevos temas para las futuras actualizaciones de la plataforma.</p>
+          </div>
+          <div class="card-footer bg-transparent border-0 px-4 pb-4">
+            <a href="#contacto" class="btn btn-outline-light w-100 rounded-pill">Enviar Sugerencia</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. PESTAÑAS Y CATÁLOGO DE ARTISTAS (25 CANCIONES COMPLETAS) -->
+  <section id="artistas" class="container-fluid-custom py-5 border-top border-secondary border-opacity-25">
+    <div class="text-center mb-5">
+      <span class="badge badge-begonia rounded-pill px-3 py-2 mb-2">
+        <i class="bi bi-stars me-1"></i> Repertorio Legendario
+      </span>
+      <h2 class="display-6 fw-bold" style="font-family: 'Cinzel', serif;">
+        Artistas & <span class="text-gradient">Colección Mágica</span>
+      </h2>
+      <p class="text-muted">Cinco artistas, cinco canciones por pestaña. Pulsa “Elegir carpeta MP3” en el reproductor inferior y selecciona la carpeta mp3 de tu proyecto.</p>
+    </div>
+
+    <ul class="nav nav-pills justify-content-center mb-5" id="artistTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="voz-tab" data-bs-toggle="pill" data-bs-target="#voz" type="button" role="tab" aria-controls="voz" aria-selected="true">Voz de Mando</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="komander-tab" data-bs-toggle="pill" data-bs-target="#komander" type="button" role="tab" aria-controls="komander" aria-selected="false">El Komander</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="r15-tab" data-bs-toggle="pill" data-bs-target="#r15" type="button" role="tab" aria-controls="r15" aria-selected="false">Banda R-15</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="calibre-tab" data-bs-toggle="pill" data-bs-target="#calibre" type="button" role="tab" aria-controls="calibre" aria-selected="false">Calibre 50</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="bandams-tab" data-bs-toggle="pill" data-bs-target="#bandams" type="button" role="tab" aria-controls="bandams" aria-selected="false">Banda MS</button>
+      </li>
+    </ul>
+
+    <div class="tab-content" id="artistTabsContent">
+      
+      <!-- 1. VOZ DE MANDO -->
+      <div class="tab-pane fade show active" id="voz" role="tabpanel" aria-labelledby="voz-tab">
+        <div class="row g-5 align-items-center">
+          <div class="col-lg-5">
+            <div class="artist-img-wrapper">
+              <img src="imagenes/vos de mando" class="artist-img" alt="Imagen provisional de Voz de Mando" data-local-image="1">
+            </div>
+          </div>
+          <div class="col-lg-7">
+            <div class="quote-card p-3 mb-4">
+              <p class="fst-italic mb-0 text-light small" style="font-family: 'Cinzel', serif;">"🌸 Entre begonias y acordes norteños, cada canción guarda una historia."</p>
+            </div>
+            <span class="badge badge-begonia rounded-pill mb-2 px-3 py-2">Corridos y norteño</span>
+            <h2 class="fw-bold display-5 mb-3" style="font-family: 'Cinzel', serif;">Voz de Mando</h2>
+            <p class="text-muted mb-4">Voz de Mando reúne historias de carretera, carácter y melodías norteñas que se quedan en la memoria.</p>
+            <h5 class="fw-semibold mb-3"><i class="bi bi-music-note-beaming text-gradient me-2"></i>Cinco canciones seleccionadas</h5>
+            <div class="list-group track-list">
+              <div class="list-group-item track-item d-flex align-items-center py-3">
+                <span class="track-number">01</span>
+                <div class="flex-grow-1 ms-3">
+                  <h6 class="mb-0 fw-bold">Besos y Caricias (En Vivo)</h6>
+                  <small class="text-muted">Voz de Mando</small>
+                </div>
+                <button class="btn btn-like me-2" aria-label="Marcar Besos y Caricias (En Vivo) como favorita" onclick="toggleLike(this)"><i class="bi bi-heart-fill"></i></button>
+                <button class="btn btn-play btn-sm px-3 rounded-pill" onclick="playAudioTrack('Besos y Caricias (En Vivo) - Voz de Mando', this)" data-track-title="Besos y Caricias (En Vivo) - Voz de Mando">
+                  <i class="bi bi-play-fill me-1"></i>Play
+                </button>
+              </div>
+              <div class="list-group-item track-item d-flex align-items-center py-3">
+                <span class="track-number">02</span>
+                <div class="flex-grow-1 ms-3">
+                  <h6 class="mb-0 fw-bold">500 Balazos</h6>
+                  <small class="text-muted">Voz de Mando</small>
+                </div>
+                <button class="btn btn-like me-2" aria-label="Marcar 500 Balazos como favorita" onclick="toggleLike(this)"><i class="bi bi-heart-fill"></i></button>
+                <button class="btn btn-play btn-sm px-3 rounded-pill" onclick="playAudioTrack('500 Balazos - Voz de Mando', this)" data-track-title="500 Balazos - Voz de Mando">
+                  <i class="bi bi-play-fill me-1"></i>Play
+                </button>
+              </div>
+              <div class="list-group-item track-item d-flex align-items-center py-3">
+                <span class="track-number">03</span>
+                <div class="flex-grow-1 ms-3">
+                  <h6 class="mb-0 fw-bold">La Hummer y el Camaro</h6>
+                  <small class="text-muted">Voz de Mando</small>
+                </div>
+                <button class="btn btn-like me-2" aria-label="Marcar La Hummer y el Camaro como favorita" onclick="toggleLike(this)"><i class="bi bi-heart-fill"></i></button>
+                <button class="btn btn-play btn-sm px-3 rounded-pill" onclick="playAudioTrack('La Hummer y el Camaro - Voz de Mando', this)" data-track-title="La Hummer y el Camaro - Voz de Mando">
+                  <i class="bi bi-play-fill me-1"></i>Play
+                </button>
+              </div>
+              <div class="list-group-item track-item d-flex align-items-center py-3">
+                <span class="track-number">04</span>
+                <div class="flex-grow-1 ms-3">
+                  <h6 class="mb-0 fw-bold">Mente en Blanco</h6>
+                  <small class="text-muted">Voz de Mando</small>
+                </div>
+                <button class="btn btn-like me-2" aria-label="Marcar Mente en Blanco como favorita" onclick="toggleLike(this)"><i class="bi bi-heart-fill"></i></button>
+                <button class="btn btn-play btn-sm px-3 rounded-pill" onclick="playAudioTrack('Mente en Blanco - Voz de Mando', this)" data-track-title="Mente en Blanco - Voz de Mando">
+                  <i class="bi bi-play-fill me-1"></i>Play
+                </button>
+              </div>
+              <div class="list-group-item track-item d-flex align-items-center py-3">
+                <span class="track-number">05</span>
+                <div class="flex-grow-1 ms-3">
+                  <h6 class="mb-0 fw-bold">Y Ahora Resulta</h6>
+                  <small class="text-muted">Voz de Mando</small>
+                </div>
+                <button class="btn btn-like me-2" aria-label="Marcar Y Ahora Resulta como favorita" onclick="toggleLike(this)"><i class="bi bi-heart-fill"></i></button>
+                <button class="btn btn-play btn-sm px-3 rounded-pill" onclick="playAudioTrack('Y Ahora Resulta - Voz de Mando', this)" data-track-title="Y Ahora Resulta - Voz de Mando">
+                  <i class="bi bi-play-fill me-1"></i>Play
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. EL KOMANDER -->
+      <div class="tab-pane fade" id="komander" role="tabpanel" aria-labelledby="komander-tab">
+        <div class="row g-5 align-items-center">
+          <div class="col-lg-5">
+            <div class="artist-img-wrapper">
+              <img src="imagenes/el komander" class="artist-img" alt="Imagen provisional de El Komander" data-local-image="1">
+            </div>
+          </div>
+          <div class="col-lg-7">
+            <div class="quote-card p-3 mb-4">
+              <p class="fst-italic mb-0 text-light small" style="font-family: 'Cinzel', serif;">"🐉 El fuego de cada acorde convierte el camino en leyenda."</p>
+            </div>
+            <span class="badge badge-begonia rounded-pill mb-2 px-3 py-2">Corridos alterados</span>
+            <h2 class="fw-bold display-5 mb-3" style="font-family: 'Cinzel', serif;">El Komander</h2>
+            <p class="text-muted mb-4">El Komander aporta una selección intensa de corridos con títulos reconocibles dentro de tu colección.</p>
+            <h5 class="fw-semibold mb-3"><i class="bi bi-music-note-beaming text-gradient me-2"></i>Cinco canciones seleccionadas</h5>
+            <div class="list-group track-list">
+              <div class="list-group-item track-item d-flex align-items-center py-3">
+                <span class="track-number">01</span>
+                <div class="flex-grow-1 ms-3">
+                  <h6 class="mb-0 fw-bold">Efectivamente</h6>
+                  <small class="text-muted">El Komander</small>
+                </div>
+                <button class="btn btn-like me-2" aria-label="Marcar Efectivamente como favorita" onclick="toggleLike(this)"><i class="bi bi-heart-fill"></i></button>
+                <button class="btn btn-play btn-sm px-3 rounded-pill" onclick="playAudioTrack('Efectivamente - El Komander', this)" data-track-title="Efectivamente - El Komander">
+                  <i class="bi bi-play-fill me-1"></i>Play
+                </button>
+              </div>
+              <div class="list-group-item track-item d-flex align-items-center py-3">
+                <span class="track-number">02</span>
+                <div class="flex-grow-1 ms-3">
+                  <h6 class="mb-0 fw-bold">El Méxicoamericano</h6>
+                  <small class="text-muted">El Komander</small>
+                </div>
+                <button class="btn btn-like me-2" aria-label="Marcar El Méxicoamericano como favorita" onclick="toggleLike(this)"><i class="bi bi-heart-fill"></i></button>
+                <button class="btn btn-play btn-sm px-3 rounded-pill" onclick="playAudioTrack('El Méxicoamericano - El Komander', this)" data-track-title="El Méxicoamericano - El Komander">
+                  <i class="bi bi-play-fill me-1"></i>Play
+                </button>
+              </div>
+              <div class="list-group-item track-item d-flex align-items-center py-3">
+                <span class="track-number">03</span>
+                <div class="flex-grow-1 ms-3">
+                  <h6 class="mb-0 fw-bold">Márchate</h6>
+                  <small class="text-muted">El Komander</small>
+                </div>
+                <button class="btn btn-like me-2" aria-label="Marcar Márchate como favorita" onclick="toggleLike(this)"><i class="bi bi-heart-fill"></i></button>
+                <button class="btn btn-play btn-sm px-3 rounded-pill" onclick="playAudioTrack('Márchate - El Komander', this)" data-track-title="Márchate - El Komander">
+                  <i class="bi bi-play-fill me-1"></i>Play
+                </button>
+              </div>
+              <div class="list-group-item track-item d-flex align-items-center py-3">
+                <span class="track-number">04</span>
+                <div class="flex-grow-1 ms-3">
+                  <h6 class="mb-0 fw-bold">Que Me Sepulten</h6>
+                  <small class="text-muted">El Komander</small>
+                </div>
+                <button class="btn btn-like me-2" aria-label="Marcar Que Me Sepulten como favorita" onclick="toggleLike(this)"><i class="bi bi-heart-fill"></i></button>
+                <button class="btn btn-play btn-sm px-3 rounded-pill" onclick="playAudioTrack('Que Me Sepulten - El Komander', this)" data-track-title="Que Me Sepulten - El Komander">
+                  <i class="bi bi-play-fill me-1"></i>Play
+                </button>
+              </div>
+              <div class="list-group-item track-item d-flex align-items-center py-3">
+                <span class="track-number">05</span>
+                <div class="flex-grow-1 ms-3">
+                  <h6 class="mb-0 fw-bold">Fiesta en la Playa</h6>
+                  <small class="text-muted">El Komander</small>
+                </div>
+                <button class="btn btn-like me-2" aria-label="Marcar Fiesta en la Playa como favorita" onclick="toggleLike(this)"><i class="bi bi-heart-fill"></i></button>
+                <button class="btn btn-play btn-sm px-3 rounded-pill" onclick="playAudioTrack('Fiesta en la Playa - El Komander', this)" data-track-title="Fiesta en la Playa - El Komander">
+                  <i class="bi bi-play-fill me-1"></i>Play
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. BANDA R-15 -->
+      <div class="tab-pane fade" id="r15" role="tabpanel" aria-labelledby="r15-tab">
+        <div class="row g-5 align-items-center">
+          <div class="col-lg-5">
+            <div class="artist-img-wrapper">
+              <img src="imagenes/banda r 15" class="artist-img" alt="Imagen provisional de Banda R-15" data-local-image="1">
+            </div>
+          </div>
+          <div class="col-lg-7">
+            <div class="quote-card p-3 mb-4">
+              <p class="fst-italic mb-0 text-light small" style="font-family: 'Cinzel', serif;">"🌺 Un ritmo que florece entre metales, tambora y recuerdos."</p>
+            </div>
+            <span class="badge badge-begonia rounded-pill mb-2 px-3 py-2">Banda y quebradita</span>
+            <h2 class="fw-bold display-5 mb-3" style="font-family: 'Cinzel', serif;">Banda R-15</h2>
+            <p class="text-muted mb-4">Ritmos de banda y quebradita para darle energía a la colección.</p>
+            <h5 class="fw-semibold mb-3"><i class="bi bi-music-note-beaming text-gradient me-2"></i>Cinco canciones seleccionadas</h5>
+            <div class="list-group track-list">
+              <div class="list-group-item track-item d-flex align-items-center py-3">
+                <span class="track-number">01</span>
+                <div class="flex-grow-1 ms-3">
+                  <h6 class="mb-0 fw-bold">Borracho Nací</h6>
+                  <small class="text-muted">Banda R-15</small>
+                </div>
+                <button class="btn btn-like me-2" aria-label="Marcar Borracho Nací como favorita" onclick="toggleLike(this)"><i class="bi bi-heart-fill"></i></button>
+                <button class="btn btn-play btn-sm px-3 rounded-pill" onclick="playAudioTrack('Borracho Nací - Banda R-15', this)" data-track-title="Borracho Nací - Banda R-15">
+                  <i class="bi bi-play-fill me-1"></i>Play
+                </button>
+              </div>
+              <div class="list-group-item track-item d-flex align-items-center py-3">
+                <span class="track-number">02</span>
+                <div class="flex-grow-1 ms-3">
+                  <h6 class="mb-0 fw-bold">La Banda Borracha</h6>
+                  <small class="text-muted">Banda R-15</small>
+                </div>
+                <button class="btn btn-like me-2" aria-label="Marcar La Banda Borracha como favorita" onclick="toggleLike(this)"><i class="bi bi-heart-fill"></i></button>
+                <button class="btn btn-play btn-sm px-3 rounded-pill" onclick="playAudioTrack('La Banda Borracha - Banda R-15', this)" data-track-title="La Banda Borracha - Banda R-15">
+                  <i class="bi bi-play-fill me-1"></i>Play
+                </button>
+              </div>
+              <div class="list-group-item track-item d-flex align-items-center py-3">
+                <span class="track-number">03</span>
+                <div class="flex-grow-1 ms-3">
+                  <h6 class="mb-0 fw-bold">Mambo</h6>
+                  <small class="text-muted">Banda R-15</small>
+                </div>
+                <button class="btn btn-like me-2" aria-label="Marcar Mambo como favorita" onclick="toggleLike(this)"><i class="bi bi-heart-fill"></i></button>
+                <button class="btn btn-play btn-sm px-3 rounded-pill" onclick="playAudioTrack('Mambo - Banda R-15', this)" data-track-title="Mambo - Banda R-15">
+                  <i class="bi bi-play-fill me-1"></i>Play
+                </button>
+              </div>
+              <div class="list-group-item track-item d-flex align-items-center py-3">
+                <span class="track-number">04</span>
+                <div class="flex-grow-1 ms-3">
+                  <h6 class="mb-0 fw-bold">Si Tu Boquita Fuera</h6>
+                  <small class="text-muted">Banda R-15</small>
+                </div>
+                <button class="btn btn-like me-2" aria-label="Marcar Si Tu Boquita Fuera como favorita" onclick="toggleLike(this)"><i class="bi bi-heart-fill"></i></button>
+                <button class="btn btn-play btn-sm px-3 rounded-pill" onclick="playAudioTrack('Si Tu Boquita Fuera - Banda R-15', this)" data-track-title="Si Tu Boquita Fuera - Banda R-15">
+                  <i class="bi bi-play-fill me-1"></i>Play
+                </button>
+              </div>
+              <div class="list-group-item track-item d-flex align-items-center py-3">
+                <span class="track-number">05</span>
+                <div class="flex-grow-1 ms-3">
+                  <h6 class="mb-0 fw-bold">Mi Linda Esposa</h6>
+                  <small class="text-muted">Banda R-15</small>
+                </div>
+                <button class="btn btn-like me-2" aria-label="Marcar Mi Linda Esposa como favorita" onclick="toggleLike(this)"><i class="bi bi-heart-fill"></i></button>
+                <button class="btn btn-play btn-sm px-3 rounded-pill" onclick="playAudioTrack('Mi Linda Esposa - Banda R-15', this)" data-track-title="Mi Linda Esposa - Banda R-15">
+                  <i class="bi bi-play-fill me-1"></i>Play
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. CALIBRE 50 -->
+      <div class="tab-pane fade" id="calibre" role="tabpanel" aria-labelledby="calibre-tab">
+        <div class="row g-5 align-items-center">
+          <div class="col-lg-5">
+            <div class="artist-img-wrapper">
+              <img src="imagenes/calibre 50" class="artist-img" alt="Imagen provisional de Calibre 50" data-local-image="1">
+            </div>
+          </div>
+          <div class="col-lg-7">
+            <div class="quote-card p-3 mb-4">
+              <p class="fst-italic mb-0 text-light small" style="font-family: 'Cinzel', serif;">"✨ Cinco canciones, cinco formas de contar una historia."</p>
+            </div>
+            <span class="badge badge-begonia rounded-pill mb-2 px-3 py-2">Regional mexicano</span>
+            <h2 class="fw-bold display-5 mb-3" style="font-family: 'Cinzel', serif;">Calibre 50</h2>
+            <p class="text-muted mb-4">Calibre 50 combina melodías de banda y norteño en canciones que van de lo sentimental a lo festivo.</p>
+            <h5 class="fw-semibold mb-3"><i class="bi bi-music-note-beaming text-gradient me-2"></i>Cinco canciones seleccionadas</h5>
+            <div class="list-group track-list">
+              <div class="list-group-item track-item d-flex align-items-center py-3">
+                <span class="track-number">01</span>
+                <div class="flex-grow-1 ms-3">
+                  <h6 class="mb-0 fw-bold">El Manguera</h6>
+                  <small class="text-muted">Calibre 50</small>
+                </div>
+                <button class="btn btn-like me-2" aria-label="Marcar El Manguera como favorita" onclick="toggleLike(this)"><i class="bi bi-heart-fill"></i></button>
+                <button class="btn btn-play btn-sm px-3 rounded-pill" onclick="playAudioTrack('El Manguera - Calibre 50', this)" data-track-title="El Manguera - Calibre 50">
+                  <i class="bi bi-play-fill me-1"></i>Play
+                </button>
+              </div>
+              <div class="list-group-item track-item d-flex align-items-center py-3">
+                <span class="track-number">02</span>
+                <div class="flex-grow-1 ms-3">
+                  <h6 class="mb-0 fw-bold">Callejero y Mujeriego</h6>
+                  <small class="text-muted">Calibre 50</small>
+                </div>
+                <button class="btn btn-like me-2" aria-label="Marcar Callejero y Mujeriego como favorita" onclick="toggleLike(this)"><i class="bi bi-heart-fill"></i></button>
+                <button class="btn btn-play btn-sm px-3 rounded-pill" onclick="playAudioTrack('Callejero y Mujeriego - Calibre 50', this)" data-track-title="Callejero y Mujeriego - Calibre 50">
+                  <i class="bi bi-play-fill me-1"></i>Play
+                </button>
+              </div>
+              <div class="list-group-item track-item d-flex align-items-center py-3">
+                <span class="track-number">03</span>
+                <div class="flex-grow-1 ms-3">
+                  <h6 class="mb-0 fw-bold">Comencé de Cero</h6>
+                  <small class="text-muted">Calibre 50</small>
+                </div>
+                <button class="btn btn-like me-2" aria-label="Marcar Comencé de Cero como favorita" onclick="toggleLike(this)"><i class="bi bi-heart-fill"></i></button>
+                <button class="btn btn-play btn-sm px-3 rounded-pill" onclick="playAudioTrack('Comencé de Cero - Calibre 50', this)" data-track-title="Comencé de Cero - Calibre 50">
+                  <i class="bi bi-play-fill me-1"></i>Play
+                </button>
+              </div>
+              <div class="list-group-item track-item d-flex align-items-center py-3">
+                <span class="track-number">04</span>
+                <div class="flex-grow-1 ms-3">
+                  <h6 class="mb-0 fw-bold">La Propuesta</h6>
+                  <small class="text-muted">Calibre 50</small>
+                </div>
+                <button class="btn btn-like me-2" aria-label="Marcar La Propuesta como favorita" onclick="toggleLike(this)"><i class="bi bi-heart-fill"></i></button>
+                <button class="btn btn-play btn-sm px-3 rounded-pill" onclick="playAudioTrack('La Propuesta - Calibre 50', this)" data-track-title="La Propuesta - Calibre 50">
+                  <i class="bi bi-play-fill me-1"></i>Play
+                </button>
+              </div>
+              <div class="list-group-item track-item d-flex align-items-center py-3">
+                <span class="track-number">05</span>
+                <div class="flex-grow-1 ms-3">
+                  <h6 class="mb-0 fw-bold">No Es Lo Que Quería</h6>
+                  <small class="text-muted">Calibre 50</small>
+                </div>
+                <button class="btn btn-like me-2" aria-label="Marcar No Es Lo Que Quería como favorita" onclick="toggleLike(this)"><i class="bi bi-heart-fill"></i></button>
+                <button class="btn btn-play btn-sm px-3 rounded-pill" onclick="playAudioTrack('No Es Lo Que Quería - Calibre 50', this)" data-track-title="No Es Lo Que Quería - Calibre 50">
+                  <i class="bi bi-play-fill me-1"></i>Play
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. BANDA MS -->
+      <div class="tab-pane fade" id="bandams" role="tabpanel" aria-labelledby="bandams-tab">
+        <div class="row g-5 align-items-center">
+          <div class="col-lg-5">
+            <div class="artist-img-wrapper">
+              <img src="imagenes/banda ms" class="artist-img" alt="Imagen provisional de Banda MS" data-local-image="1">
+            </div>
+          </div>
+          <div class="col-lg-7">
+            <div class="quote-card p-3 mb-4">
+              <p class="fst-italic mb-0 text-light small" style="font-family: 'Cinzel', serif;">"🌸 Que cada melodía deje una pequeña flor en la memoria."</p>
+            </div>
+            <span class="badge badge-begonia rounded-pill mb-2 px-3 py-2">Banda sinaloense</span>
+            <h2 class="fw-bold display-5 mb-3" style="font-family: 'Cinzel', serif;">Banda MS</h2>
+            <p class="text-muted mb-4">Una selección de banda sinaloense para completar el recorrido musical.</p>
+            <h5 class="fw-semibold mb-3"><i class="bi bi-music-note-beaming text-gradient me-2"></i>Cinco canciones seleccionadas</h5>
+            <div class="list-group track-list">
+              <div class="list-group-item track-item d-flex align-items-center py-3">
+                <span class="track-number">01</span>
+                <div class="flex-grow-1 ms-3">
+                  <h6 class="mb-0 fw-bold">El Color de tus Ojos</h6>
+                  <small class="text-muted">Banda MS</small>
+                </div>
+                <button class="btn btn-like me-2" aria-label="Marcar El Color de tus Ojos como favorita" onclick="toggleLike(this)"><i class="bi bi-heart-fill"></i></button>
+                <button class="btn btn-play btn-sm px-3 rounded-pill" onclick="playAudioTrack('El Color de tus Ojos - Banda MS', this)" data-track-title="El Color de tus Ojos - Banda MS">
+                  <i class="bi bi-play-fill me-1"></i>Play
+                </button>
+              </div>
+              <div class="list-group-item track-item d-flex align-items-center py-3">
+                <span class="track-number">02</span>
+                <div class="flex-grow-1 ms-3">
+                  <h6 class="mb-0 fw-bold">Hermosa Experiencia</h6>
+                  <small class="text-muted">Banda MS</small>
+                </div>
+                <button class="btn btn-like me-2" aria-label="Marcar Hermosa Experiencia como favorita" onclick="toggleLike(this)"><i class="bi bi-heart-fill"></i></button>
+                <button class="btn btn-play btn-sm px-3 rounded-pill" onclick="playAudioTrack('Hermosa Experiencia - Banda MS', this)" data-track-title="Hermosa Experiencia - Banda MS">
+                  <i class="bi bi-play-fill me-1"></i>Play
+                </button>
+              </div>
+              <div class="list-group-item track-item d-flex align-items-center py-3">
+                <span class="track-number">03</span>
+                <div class="flex-grow-1 ms-3">
+                  <h6 class="mb-0 fw-bold">Me Vas a Extrañar</h6>
+                  <small class="text-muted">Banda MS</small>
+                </div>
+                <button class="btn btn-like me-2" aria-label="Marcar Me Vas a Extrañar como favorita" onclick="toggleLike(this)"><i class="bi bi-heart-fill"></i></button>
+                <button class="btn btn-play btn-sm px-3 rounded-pill" onclick="playAudioTrack('Me Vas a Extrañar - Banda MS', this)" data-track-title="Me Vas a Extrañar - Banda MS">
+                  <i class="bi bi-play-fill me-1"></i>Play
+                </button>
+              </div>
+              <div class="list-group-item track-item d-flex align-items-center py-3">
+                <span class="track-number">04</span>
+                <div class="flex-grow-1 ms-3">
+                  <h6 class="mb-0 fw-bold">Qué Quieres que Haga</h6>
+                  <small class="text-muted">Banda MS</small>
+                </div>
+                <button class="btn btn-like me-2" aria-label="Marcar Qué Quieres que Haga como favorita" onclick="toggleLike(this)"><i class="bi bi-heart-fill"></i></button>
+                <button class="btn btn-play btn-sm px-3 rounded-pill" onclick="playAudioTrack('Qué Quieres que Haga - Banda MS', this)" data-track-title="Qué Quieres que Haga - Banda MS">
+                  <i class="bi bi-play-fill me-1"></i>Play
+                </button>
+              </div>
+              <div class="list-group-item track-item d-flex align-items-center py-3">
+                <span class="track-number">05</span>
+                <div class="flex-grow-1 ms-3">
+                  <h6 class="mb-0 fw-bold">A Ti Te Conviene</h6>
+                  <small class="text-muted">Banda MS</small>
+                </div>
+                <button class="btn btn-like me-2" aria-label="Marcar A Ti Te Conviene como favorita" onclick="toggleLike(this)"><i class="bi bi-heart-fill"></i></button>
+                <button class="btn btn-play btn-sm px-3 rounded-pill" onclick="playAudioTrack('A Ti Te Conviene - Banda MS', this)" data-track-title="A Ti Te Conviene - Banda MS">
+                  <i class="bi bi-play-fill me-1"></i>Play
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 6. FORMULARIO DE SUGERENCIAS Y CONTACTO -->
+  <section id="contacto" class="container-fluid-custom py-5 border-top border-secondary border-opacity-25">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="custom-card p-5">
+          <div class="text-center mb-4">
+            <span class="badge badge-begonia rounded-pill px-3 py-2 mb-2">
+              <i class="bi bi-mailbox me-1"></i> Buzón Mágico
+            </span>
+            <h3 class="fw-bold" style="font-family: 'Cinzel', serif;">Sugerencias de Canciones</h3>
+            <p class="text-muted small">¿Qué obra maestra o artista te gustaría ver en la próxima actualización de la playlist?</p>
+          </div>
+
+          <form id="suggestionForm" onsubmit="handleSuggestion(event)">
+            <div class="mb-3">
+              <label for="userName" class="form-label fw-semibold small">Tu Nombre / Apodo</label>
+              <input type="text" class="form-control" id="userName" placeholder="Ej. Guardián del Dragón" required>
+            </div>
+            <div class="mb-3">
+              <label for="songTitle" class="form-label fw-semibold small">Artista y Nombre de la Canción</label>
+              <input type="text" class="form-control" id="songTitle" placeholder="Ej. Junior H - El Azul" required>
+            </div>
+            <div class="mb-4">
+              <label for="songReason" class="form-label fw-semibold small">¿Por qué deberíamos agregarla?</label>
+              <textarea class="form-control" id="songReason" rows="3" placeholder="Cuéntanos la vibra o historia..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-gradient w-100 py-3 rounded-pill">
+              <i class="bi bi-send-fill me-2"></i>Enviar Sugerencia
+            </button>
+          </form>
+          <div id="formSuccess" class="alert alert-success mt-3 d-none text-center rounded-pill" role="alert">
+            ¡Sugerencia enviada con éxito al reino de Begonia y Dragón! 🌸🐉
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. FOOTER COMPLETO -->
+  <footer class="py-4 text-center border-top border-secondary border-opacity-25 bg-black text-muted small">
+    <div class="container-fluid-custom">
+      <p class="mb-1">&copy; 2026 Playlist Favoritas | Begonia & Dragon Edition. Todos los derechos reservados.</p>
+      <p class="mb-0 text-gradient fw-semibold">Hecho con pasión, música regional y fuego eterno.</p>
+    </div>
+  </footer>
+
+  <!-- 8. REPRODUCTOR DE AUDIO HTML5 FLOTANTE (Fijo abajo) -->
+  <div class="audio-player-bar" id="playerBar">
+    <div class="container-fluid-custom d-flex align-items-center justify-content-between flex-wrap gap-3">
+      <div class="d-flex align-items-center">
+        <div class="bg-dark rounded-circle p-2 me-3 d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; border: 1px solid var(--begonia-soft);">
+          <i class="bi bi-music-note-beaming text-gradient fs-5"></i>
+        </div>
+        <div>
+          <h6 class="mb-0 fw-bold text-light" id="currentTrackTitle">Selecciona una canción</h6>
+          <small class="text-muted" id="currentTrackStatus">Listo para reproducir</small>
+        </div>
+      </div>
+
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <label class="btn btn-outline-light btn-sm rounded-pill px-3 mb-0" for="audioFolderPicker" title="Selecciona la carpeta mp3 de tu proyecto">
+          <i class="bi bi-folder2-open me-1"></i>Elegir carpeta MP3
+        </label>
+        <input id="audioFolderPicker" type="file" webkitdirectory directory multiple accept="audio/*,.mp3" hidden>
+      </div>
+
+      <div class="flex-grow-1 mx-md-4 max-w-md">
+        <audio id="mainAudio" controls class="w-100" style="height: 38px; filter: invert(0.9) hue-rotate(180deg);"></audio>
+      </div>
+
+      <div>
+        <button class="btn btn-outline-light btn-sm rounded-pill px-3" onclick="stopAudio()">
+          <i class="bi bi-stop-fill me-1"></i>Detener
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    let localAudioFiles = [];
+    const audioPlayer = document.getElementById('mainAudio');
+    const titleElement = document.getElementById('currentTrackTitle');
+    const statusElement = document.getElementById('currentTrackStatus');
+    const folderPicker = document.getElementById('audioFolderPicker');
+
+    function normalizeText(value) {
+      return (value || '')
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .replace(/\.(mp3|mpeg|wav|ogg|m4a|aac|flac)$/i, '')
+        .replace(/[^a-z0-9]+/g, ' ')
+        .trim();
+    }
+
+    function toggleLike(btn) {
+      btn.classList.toggle('active');
+      const icon = btn.querySelector('i');
+      if (!icon) return;
+      if (btn.classList.contains('active')) {
+        icon.classList.remove('bi-heart-fill');
+        icon.classList.add('bi-heart', 'text-danger');
+        btn.setAttribute('aria-pressed', 'true');
+      } else {
+        icon.classList.remove('bi-heart', 'text-danger');
+        icon.classList.add('bi-heart-fill');
+        btn.setAttribute('aria-pressed', 'false');
+      }
+    }
+
+    folderPicker.addEventListener('change', () => {
+      localAudioFiles = Array.from(folderPicker.files || []).filter(file =>
+        /\.(mp3|mpeg|wav|ogg|m4a|aac|flac)$/i.test(file.name)
+      );
+      statusElement.textContent = localAudioFiles.length
+        ? `Carpeta cargada: ${localAudioFiles.length} archivos de audio`
+        : 'No se encontraron canciones. Elige la carpeta mp3.';
+      if (!localAudioFiles.length) {
+        alert('No encontré archivos de audio en la carpeta seleccionada. Selecciona la carpeta mp3 de tu proyecto.');
+      }
+    });
+
+    function playAudioTrack(title, button) {
+      if (!localAudioFiles.length) {
+        titleElement.textContent = title;
+        statusElement.textContent = 'Primero selecciona la carpeta mp3';
+        alert('Primero pulsa “Elegir carpeta MP3” en el reproductor inferior y selecciona la carpeta mp3 de tu proyecto.');
+        return;
+      }
+
+      const wanted = normalizeText(title);
+      const titleWords = wanted.split(' ').filter(w => w.length > 2 && !['en','vivo','voz','de','la','el','banda','calibre','komander','mando','r15','ms'].includes(w));
+      let bestFile = null;
+      let bestScore = -1;
+
+      for (const file of localAudioFiles) {
+        const candidate = normalizeText(file.name);
+        let score = 0;
+        if (candidate === wanted) score += 100;
+        for (const word of titleWords) {
+          if (candidate.includes(word)) score += word.length > 5 ? 4 : 2;
+        }
+        const artistWords = wanted.split(' ').filter(w => ['komander','mando','calibre','borracha','ms'].includes(w));
+        for (const word of artistWords) if (candidate.includes(word)) score += 2;
+        if (score > bestScore) { bestScore = score; bestFile = file; }
+      }
+
+      if (!bestFile || bestScore < 2) {
+        titleElement.textContent = title;
+        statusElement.textContent = 'No se encontró el archivo correspondiente';
+        alert('No pude identificar el archivo de audio para “' + title + '”. Revisa que esté dentro de la carpeta mp3.');
+        return;
+      }
+
+      audioPlayer.pause();
+      audioPlayer.src = URL.createObjectURL(bestFile);
+      audioPlayer.load();
+      titleElement.textContent = title;
+      statusElement.textContent = 'Archivo local: ' + bestFile.name;
+      audioPlayer.play().catch(() => {
+        statusElement.textContent = 'Pulsa Play en el reproductor inferior para iniciar';
+      });
+    }
+
+    function stopAudio() {
+      audioPlayer.pause();
+      audioPlayer.currentTime = 0;
+      titleElement.textContent = 'Reproducción detenida';
+      statusElement.textContent = 'Selecciona una nueva canción';
+    }
+
+    function handleSuggestion(e) {
+      e.preventDefault();
+      document.getElementById('formSuccess').classList.remove('d-none');
+      document.getElementById('suggestionForm').reset();
+      setTimeout(() => document.getElementById('formSuccess').classList.add('d-none'), 5000);
+    }
+
+    (function loadLocalArtistImages() {
+      const extensions = ['', '.jpg', '.jpeg', '.png', '.webp', '.JPG', '.JPEG', '.PNG'];
+      document.querySelectorAll('img[data-local-image="1"]').forEach(img => {
+        const base = img.getAttribute('src');
+        let index = 0;
+        function tryNext() {
+          if (index >= extensions.length) {
+            img.alt = img.alt + ' (no se encontró el archivo local)';
+            return;
+          }
+          const candidate = base + extensions[index++];
+          const probe = new Image();
+          probe.onload = () => { img.src = candidate; };
+          probe.onerror = tryNext;
+          probe.src = candidate;
+        }
+        tryNext();
+      });
+    })();
+  </script>
+</body>
+</html>
